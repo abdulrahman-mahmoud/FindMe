@@ -1,8 +1,9 @@
 import customtkinter as ctk
-from PIL import Image
+from PIL import Image, ImageDraw
 
-def launch_login_page(root=None):
-    login = root if root else ctk.CTk()
+def launch_login_page():
+    # Create CustomTkinter window
+    login = ctk.CTk()
     login.title("FindMe - Login")
 
     # Window size & center
@@ -13,55 +14,42 @@ def launch_login_page(root=None):
     y = (screen_height - height) // 2
     login.geometry(f"{width}x{height}+{x}+{y}")
 
-    login.overrideredirect(True)  # remove OS title bar
-    login.configure(fg_color="#d9d9d9")  # grey background
+    # Set background color
+    login.configure(fg_color="#2e2e2e")  # dark gray background
 
+    # CustomTkinter appearance
     ctk.set_appearance_mode("dark")
     ctk.set_default_color_theme("blue")
 
-    # --- Top bar for dragging ---
-    top_bar = ctk.CTkFrame(login, height=40, fg_color="#d9d9d9", border_width=0)
-    top_bar.pack(fill="x")
-
-    # Enable window dragging
-    def start_move(event):
-        login.x = event.x
-        login.y = event.y
-
-    def stop_move(event):
-        login.x = None
-        login.y = None
-
-    def do_move(event):
-        x = event.x_root - login.x
-        y = event.y_root - login.y
-        login.geometry(f"+{x}+{y}")
-
-    top_bar.bind("<Button-1>", start_move)
-    top_bar.bind("<ButtonRelease-1>", stop_move)
-    top_bar.bind("<B1-Motion>", do_move)
-
     # --- Content: logo + login form ---
-    content = ctk.CTkFrame(login, fg_color="#d9d9d9", border_width=0)
+    content = ctk.CTkFrame(login, fg_color="#2e2e2e", border_width=0)
     content.pack(expand=True, fill="both")
 
-    # Logo
-    logo_image = ctk.CTkImage(light_image=Image.open("assets/login.png"), size=(200,200))
-    ctk.CTkLabel(content, image=logo_image, text="", fg_color="#d9d9d9").pack(pady=30)
+    # --- Function to make circular logo ---
+    def make_circle_image(path, size):
+        img = Image.open(path).resize((size, size), Image.Resampling.LANCZOS).convert("RGBA")
+        mask = Image.new("L", (size, size), 0)
+        draw = ImageDraw.Draw(mask)
+        draw.ellipse((0, 0, size, size), fill=255)
+        img.putalpha(mask)
+        return ctk.CTkImage(light_image=img, size=(size, size))
+
+    # Load circular logo
+    logo_image = make_circle_image("assets/login.png", 200)
+    ctk.CTkLabel(content, image=logo_image, text="", fg_color="#2e2e2e").pack(pady=30)
 
     # Login form
-    form_frame = ctk.CTkFrame(content, fg_color="#d9d9d9", border_width=0)
+    form_frame = ctk.CTkFrame(content, fg_color="#2e2e2e", border_width=0)
     form_frame.pack(pady=20)
 
-    ctk.CTkLabel(form_frame, text="Username", fg_color="#d9d9d9").pack(pady=5)
-    username_entry = ctk.CTkEntry(form_frame, width=300)
+    ctk.CTkLabel(form_frame, text="ID", fg_color="#2e2e2e").pack(pady=5)
+    username_entry = ctk.CTkEntry(form_frame, width=300, placeholder_text="Enter your ID")
     username_entry.pack(pady=5)
 
-    ctk.CTkLabel(form_frame, text="Password", fg_color="#d9d9d9").pack(pady=5)
-    password_entry = ctk.CTkEntry(form_frame, show="*", width=300)
+    ctk.CTkLabel(form_frame, text="Password", fg_color="#2e2e2e").pack(pady=5)
+    password_entry = ctk.CTkEntry(form_frame, show="*", width=300, placeholder_text="Enter your password")
     password_entry.pack(pady=5)
 
     ctk.CTkButton(form_frame, text="Login", width=300).pack(pady=20)
 
-    if root is None:
-        login.mainloop()
+    login.mainloop()
