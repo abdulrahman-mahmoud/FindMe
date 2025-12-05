@@ -5,6 +5,7 @@ def launch_login_page(root=None):
     login = root if root else ctk.CTk()
     login.title("FindMe - Login")
 
+    # Window size & center
     width, height = 1280, 720
     screen_width = login.winfo_screenwidth()
     screen_height = login.winfo_screenheight()
@@ -18,7 +19,7 @@ def launch_login_page(root=None):
     ctk.set_appearance_mode("dark")
     ctk.set_default_color_theme("blue")
 
-    # --- Top bar with Mac-style buttons on the RIGHT ---
+    # --- Top bar for dragging ---
     top_bar = ctk.CTkFrame(login, height=40, fg_color="#d9d9d9", border_width=0)
     top_bar.pack(fill="x")
 
@@ -39,37 +40,6 @@ def launch_login_page(root=None):
     top_bar.bind("<Button-1>", start_move)
     top_bar.bind("<ButtonRelease-1>", stop_move)
     top_bar.bind("<B1-Motion>", do_move)
-
-    # Buttons frame on the right
-    buttons_frame = ctk.CTkFrame(top_bar, fg_color="#d9d9d9", border_width=0)
-    buttons_frame.pack(side="right", padx=10, pady=10)
-
-    is_maximized = {"state": False, "geom": f"{width}x{height}+{x}+{y}"}
-
-    def close(): login.destroy()
-
-    # Simulate minimize (hide and restore)
-    def minimize():
-        login.withdraw()
-        login.after(100, lambda: login.deiconify())
-
-    # Maximize toggle
-    def maximize():
-        if not is_maximized["state"]:
-            is_maximized["geom"] = login.geometry()
-            login.geometry(f"{login.winfo_screenwidth()}x{login.winfo_screenheight()}+0+0")
-            is_maximized["state"] = True
-        else:
-            login.geometry(is_maximized["geom"])
-            is_maximized["state"] = False
-
-    # Mac-style buttons with requested colors
-    ctk.CTkButton(buttons_frame, width=15, height=15, corner_radius=8,
-                  fg_color="#FF605C", hover_color="#ff4d4d", command=close, text="").pack(side="left", padx=5)
-    ctk.CTkButton(buttons_frame, width=15, height=15, corner_radius=8,
-                  fg_color="#FFBD44", hover_color="#ffd966", command=minimize, text="").pack(side="left", padx=5)
-    ctk.CTkButton(buttons_frame, width=15, height=15, corner_radius=8,
-                  fg_color="#00CA4E", hover_color="#00e66e", command=maximize, text="").pack(side="left", padx=5)
 
     # --- Content: logo + login form ---
     content = ctk.CTkFrame(login, fg_color="#d9d9d9", border_width=0)
