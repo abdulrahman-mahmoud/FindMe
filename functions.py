@@ -1,11 +1,16 @@
 import smtplib
 from email.mime.text import MIMEText
 
-def send_match_notifcation_email(reciver):
-    sender = 'Find.it.zc@gmail.com'
-    password = 'vnguomfjipownzkp' 
-    reciver = f'{reciver}@zewailcity.edu.eg'
-    subject = 'Notofication from Find.it.zc'
+import os
+from dotenv import load_dotenv
+
+# Load variables from .env file
+# -------------------------
+def send_match_notification_email(reciver):
+    load_dotenv()
+    sender = os.getenv("EMAIL_SENDER", "")
+    password = os.getenv("EMAIL_PASSWORD", "")
+    subject = 'Notification from Find.it.zc'
     body = 'This message is send by python code script , plz dont reply thx '
     msg = MIMEText(body)
     msg['Subject'] = subject
@@ -16,4 +21,4 @@ def send_match_notifcation_email(reciver):
         smtp_server.login(sender, password)
         smtp_server.sendmail(sender, reciver, msg.as_string())
         print("Message sent!")
-send_match_notifcation_email('')
+send_match_notification_email('')
