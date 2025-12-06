@@ -1,5 +1,12 @@
 import tkinter as tk
 from tkvideo import tkvideo
+import sys
+import os
+
+# Ensure Python can find the gui folder
+sys.path.append(os.path.join(os.path.dirname(__file__), 'gui'))
+
+# Now import the function we created in Step 1
 from gui.login import launch_login_page
 
 VIDEO_PATH = "assets/intro.mp4"
@@ -25,14 +32,15 @@ def show_splash_then_login():
     root.focus_force()
 
     # Play video once
+    # Note: Ensure assets/intro.mp4 actually exists!
     player = tkvideo(VIDEO_PATH, splash_label, loop=0, size=(VIDEO_WIDTH, VIDEO_HEIGHT))
     player.play()
 
     # Switch to login after video
     def switch_to_login():
         root.grab_release()  # release modal grab
-        root.destroy()
-        launch_login_page()
+        root.destroy()       # Close the splash screen
+        launch_login_page()  # Open the login screen
 
     root.after(VIDEO_DURATION_MS, switch_to_login)
     root.mainloop()
