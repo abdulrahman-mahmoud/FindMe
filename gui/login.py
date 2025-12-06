@@ -3,7 +3,7 @@ from PIL import Image, ImageTk
 from tkinter import messagebox
 import csv
 import os
-
+# ------------------------
 # Configuration
 # -------------------------
 ctk.set_appearance_mode("Dark")
