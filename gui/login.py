@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk
 from tkinter import messagebox
+import csv
 import os
 
 # -------------------------
@@ -12,18 +13,20 @@ ctk.set_default_color_theme("blue")
 # -------------------------
 #  UPDATED DATABASE (Stores Password & Real Name)
 # -------------------------
-TEST_USERS = {
-    "202500770": {"password": "admin",      "name": "mohamed sherif"},
-    "202500096": {"password": "mypassword", "name": "amr ashraf"},
-    "202500699": {"password": "admin",   "name": "abdelrahman atai"},
-    "202504290": {"password": "test2025",   "name": "Bruce Wayne"},
-    "202505604": {"password": "abc123",     "name": "Clark Kent"},
-    "202506782": {"password": "password1",  "name": "Tony Stark"},
-    "202507115": {"password": "secret",     "name": "Peter Parker"},
-    "202508443": {"password": "admin",      "name": "Natasha Romanoff"},
-    "202509022": {"password": "student",    "name": "Harry Potter"},
-    "202510734": {"password": "findme",     "name": "Sherlock Holmes"},
-}
+def load_users_from_csv(filename="assets/people_2025_50.csv"):
+    users = {}
+    with open(filename, mode="r", newline="", encoding="utf-8") as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            # Now we use 'id' as the key, but the CSV starts with name first
+            users[row["ID"]] = {
+                "password": row["Password"],
+                "name": row["Name"]
+            }
+    return users
+
+TEST_USERS = load_users_from_csv()
+
 
 class LoginApp(ctk.CTk):
     def __init__(self):
